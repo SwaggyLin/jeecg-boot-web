@@ -5,17 +5,24 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="12">
-          <a-col :md="7" :sm="8">
+          <a-col :md="6" :sm="6">
+            <a-form-item label="表名" :labelCol="{span: 6}" :wrapperCol="{span: 14, offset: 1}">
+              <a-select placeholder="请选择表名" v-model="queryParam.dictTable">
+                <a-select-option v-for="d in dictTableDatas" :key="d.value" :value="d.value">{{d.text}}</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="6">
             <a-form-item label="字典名称" :labelCol="{span: 6}" :wrapperCol="{span: 14, offset: 1}">
               <a-input placeholder="请输入字典名称" v-model="queryParam.dictName"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :md="7" :sm="8">
+          <a-col :md="6" :sm="6">
             <a-form-item label="字典编号" :labelCol="{span: 6}" :wrapperCol="{span: 14, offset: 1}">
               <a-input placeholder="请输入字典编号" v-model="queryParam.dictCode"></a-input>
             </a-form-item>
           </a-col>
-          <a-col :md="7" :sm="8">
+          <a-col :md="6" :sm="6">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -66,6 +73,7 @@
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import DictModal from './modules/DictModal'
   import DictItemList from './DictItemList'
+  import { queryDictTableDatas } from '@/api/api'
 
   export default {
     name: "DictList",
@@ -73,12 +81,14 @@
     components: {DictModal, DictItemList},
     data() {
       return {
+        dictTableDatas:[],
         description: '这是数据字典页面',
         visible: false,
         // 查询条件
         queryParam: {
           dictCode: "",
           dictName: "",
+          dictTable:""
         },
         // 表头
         columns: [
@@ -91,6 +101,11 @@
             customRender: function (t, r, index) {
               return parseInt(index) + 1;
             }
+          },
+          {
+            title: '表名',
+            align: "left",
+            dataIndex: 'dictTable',
           },
           {
             title: '字典名称',
@@ -131,6 +146,9 @@
         },
       }
     },
+    created() {
+      this.fetchDictTableDatas();
+    },
     computed: {
       importExcelUrl: function () {
         return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
@@ -144,6 +162,21 @@
         param.pageSize = this.ipagination.pageSize;
         return filterObj(param);
       },
+      fetchDictTableDatas(){
+       queryDictTableDatas().then((res) => {
+        if (res.success) {
+          const result = res.result
+            result.forEach((r)=>{
+                this.dictTableDatas.push({
+                  value:r,
+                  text:r
+                })
+              })
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
+     },
       //取消选择
       cancelDict() {
         this.dict = "";
@@ -159,6 +192,7 @@
         var that = this;
         that.queryParam.dictName = "";
         that.queryParam.dictCode = "";
+        that.queryParam.dictTable = "";
         that.loadData(this.ipagination.current);
       },
     },

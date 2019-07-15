@@ -87,6 +87,8 @@ const queryUserByDepId = (params)=>getAction("/sys/user/queryUserByDepId",params
 const queryUserRoleMap = (params)=>getAction("/sys/user/queryUserRoleMap",params);
 // 重复校验
 const duplicateCheck = (params)=>getAction("/sys/duplicate/check",params);
+//查询所有表名
+const queryDictTableDatas = (params)=>getAction("/sys/dict/queryTableDatas",params);
 
 export {
   // imgView,
@@ -133,6 +135,7 @@ export {
   queryUserRoleMap,
   duplicateCheck,
   queryTreeListForRole,
+  queryDictTableDatas
 }
 
 

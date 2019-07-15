@@ -21,6 +21,17 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
+          label="表名">
+          <a-select placeholder="请选择表名" v-decorator="[ 'dictTable', validatorRules.dictTable]">
+              <a-select-option v-for="d in dictTableDatas" :key="d.value" :value="d.value">{{d.text}}</a-select-option>
+          </a-select>
+        </a-form-item>
+
+        
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
           label="字典编码">
           <a-input placeholder="请输入字典编码" v-decorator="[ 'dictCode', validatorRules.dictCode]"/>
         </a-form-item>
@@ -39,7 +50,7 @@
 
 <script>
   import pick from 'lodash.pick'
-  import { addDict, editDict, duplicateCheck } from '@/api/api'
+  import { addDict, editDict, duplicateCheck,queryDictTableDatas } from '@/api/api'
 
   export default {
     name: 'DictModal',
@@ -53,6 +64,7 @@
           xs: { span: 24 },
           sm: { span: 5 }
         },
+        dictTableDatas:[],
         wrapperCol: {
           xs: { span: 24 },
           sm: { span: 16 }
@@ -64,11 +76,13 @@
           dictCode: {
             rules: [{ required: true, message: '请输入字典编码!' },
               { validator: this.validateDictCode }]
-          }
+          },
+          dictTable: { rules: [{ required: true, message: '请输入表名!' }] },
         }
       }
     },
     created() {
+      this.fetchDictTableDatas();
     },
     methods: {
       validateDictCode(rule, value, callback) {
@@ -87,6 +101,21 @@
           }
         })
       },
+      fetchDictTableDatas(){
+       queryDictTableDatas().then((res) => {
+        if (res.success) {
+          const result = res.result
+            result.forEach((r)=>{
+                this.dictTableDatas.push({
+                  value:r,
+                  text:r
+                })
+              })
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
+     },
       handleChange(value) {
         this.model.status = value
       },
@@ -116,6 +145,7 @@
             values.dictName = (values.dictName || '').trim()
             values.dictCode = (values.dictCode || '').trim()
             values.description = (values.description || '').trim()
+            values.dictTable = (values.dictTable || '').trim()
             let formData = Object.assign(this.model, values)
             let obj
             console.log(formData)
