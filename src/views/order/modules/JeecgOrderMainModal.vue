@@ -90,7 +90,7 @@
         this.visible = true;
         this.$nextTick(() => {
           this.form.setFieldsValue(pick(this.model,'orderCode','ctype','orderMoney','content'))
-          //时间格式化
+		  //时间格式化
           this.form.setFieldsValue({orderDate:this.model.orderDate?moment(this.model.orderDate):null})
         });
 

@@ -13,9 +13,7 @@
           </a-col>
           <a-col :md="6" :sm="8">
             <a-form-item label="订单类型">
-              <a-select v-model="queryParam.ctype" placeholder="请选择订单类型" default-value="0">
-                  <a-select-option v-for="d in selectDatas" :key="d.value" :value="d.value">{{d.text}}</a-select-option>
-              </a-select>
+              <a-input placeholder="请输入订单类型" v-model="queryParam.ctype"></a-input>
             </a-form-item>
           </a-col>
         <template v-if="toggleSearchStatus">
@@ -53,7 +51,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('order主表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('订单表主表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -121,8 +119,7 @@
     },
     data () {
       return {
-        selectDatas:[],
-        description: 'order主表管理页面',
+        description: '订单表主表管理页面',
         // 表头
         columns: [
           {
@@ -143,7 +140,7 @@
 		   {
             title: '订单类型',
             align:"center",
-            dataIndex: 'ctype_dictText'
+            dataIndex: 'ctype'
            },
 		   {
             title: '订单日期',
@@ -176,29 +173,13 @@
        },
     }
   },
-  created () {
-    this.fetchSelectData()
-  },
   computed: {
     importExcelUrl: function(){
       return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
     }
   },
     methods: {
-     fetchSelectData(){
-       this.selectDatas.push({
-        value:0,
-        text:"全部"
-       });
-       this.selectDatas.push({
-        value:1,
-        text:"关闭"
-       });
-       this.selectDatas.push({
-        value:2,
-        text:" 运行中"
-       });
-     }
+     
     }
   }
 </script>
